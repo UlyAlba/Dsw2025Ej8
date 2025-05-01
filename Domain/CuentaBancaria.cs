@@ -2,17 +2,16 @@
 
 public abstract class CuentaBancaria
 {
-    public int numero { get; }
-    public decimal saldo { get; protected set; }
-    public Estado estado { get; private set; }
-    public decimal tasaDeInteres { get; set; }
-    public decimal limiteDeDescubierto { get; set; }
+    public string Numero { get; }
+    public decimal Saldo { get; protected set; }
+    public Estado Estado { get; protected set; }
+    
 
-    protected CuentaBancaria(int numero, decimal saldo)
+    protected CuentaBancaria(string numero, decimal saldo)
     {
-        this.numero = numero;
-        this.saldo = saldo;
-        this.estado = Estado.Activa;
+        Numero = numero;            
+        Saldo = saldo;
+        Estado = Estado.Activa;
     }
 
     public void Depositar(decimal monto)
@@ -27,24 +26,18 @@ public abstract class CuentaBancaria
         RealizarRetiro(monto);
     }
 
-    public void AplicarInteres()
-    {
-        if (this is CajaDeAhorro)
-            saldo += saldo * tasaDeInteres;
-    }
-
     private void ValidarOperacion(decimal monto)
     {
         if (monto <= 0) throw new MontoNoValidoException();
-        if (estado != Estado.Activa) throw new CuentaNoActivaException(estado);
+        if (Estado != Estado.Activa) throw new CuentaNoActivaException(Estado);
     }
 
     protected abstract void RealizarDeposito(decimal monto);
     protected abstract void RealizarRetiro(decimal monto);
 
-    protected void Suspender() => estado = Estado.Suspendida;
+    protected void Suspender() => Estado = Estado.Suspendida;
 
     public override string ToString()
-        => $"{{ Numero = {numero}, Tipo = {GetType().Name}, Saldo = {saldo:C} }}";
+        => $"{{ Numero = {Numero}, Tipo = {GetType().Name}, Saldo = {Saldo:C} }}";
 }
 

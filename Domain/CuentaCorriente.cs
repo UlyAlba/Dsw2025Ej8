@@ -8,26 +8,31 @@ namespace Dsw2025Ej8.Domain
 {
     public class CuentaCorriente: CuentaBancaria
     {
-        public decimal comision { get; set; }
+        public decimal LimiteDescubierto { get; set; }
+        public decimal Comision { get; set; }
 
-        public CuentaCorriente(int numero, decimal saldo)
+        public CuentaCorriente(string numero, decimal saldo)
             : base(numero, saldo)
         { }
 
         protected override void RealizarDeposito(decimal monto)
         {
-            var neto = monto - monto * comision;
-            saldo += neto;
+            var neto = monto - (monto * Comision);
+            Saldo += neto;
         }
 
         protected override void RealizarRetiro(decimal monto)
         {
-            if (saldo - monto < -limiteDeDescubierto)
+            if (Saldo - monto < -LimiteDescubierto)
             {
                 Suspender();
                 throw new SaldoInsuficienteException();
             }
-            saldo -= monto;
+            else
+            {
+                Saldo -= monto;
+                if (Saldo < 0) Suspender();
+            }
         }
     }
     
